@@ -14,7 +14,7 @@
 //  Nome: Caio Gabriel Cruz Amorim
 //  email: cgabrielamorim@gmail.com
 //  Matrícula: 20242160023
-//  Semestre: 2º Semestre
+//  Semestre: 2025.1
 
 //  Copyright © 2016 Renato Novais. All rights reserved.
 // Última atualização: 07/05/2021 - 19/08/2016
@@ -95,7 +95,7 @@ int q1(char data[])
   int datavalida = 1;
 
   //quebrar a string data em strings sDia, sMes, sAno
-
+  
 
   //printf("%s\n", data);
 
