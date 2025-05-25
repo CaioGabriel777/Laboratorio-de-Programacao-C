@@ -96,8 +96,17 @@ int q1(char data[])
   int sDia = 0, sMes = 0, sAno = 0;
   int i = 0;
 
+  // Verifica se tem algum caractere inválido na string
+  while(data[i] != '\0'){
+    if(data[i] != '/' && (data[i] < '0' || data[i] > '9')){
+      datavalida = 0;
+      break;
+    }
+    i++;
+  }
+  i = 0;
+  
   //quebrar a string data em strings sDia, sMes, sAno
-
   while(data[i] != '/' && data[i] != '\0'){
     sDia = sDia * 10 + (data[i] - '0');
     i++;
@@ -119,8 +128,14 @@ int q1(char data[])
 
   if(sMes > 12 || sMes < 1) datavalida = 0;
 
-  if(sAno < 100){ //sAno = 99; sAno = 1999; Como vou fazer isso? 
-    
+  if(sAno < 0) datavalida = 0;
+
+  if(sAno < 100){ 
+    if(sAno >= 30){
+      sAno += 1900;
+    }else{
+      sAno += 2000;
+    }
   }
 
   if((sAno % 4 == 0 && sAno % 100 != 0) || (sAno % 400 == 0)){
@@ -132,10 +147,6 @@ int q1(char data[])
       datavalida = 0; 
     }
   }
-
-  printf("Dia: %d\n", sDia);
-  printf("Mes: %d\n", sMes);
-  printf("Ano: %d\n", sAno);
 
   //printf("%s\n", data);
 
@@ -238,6 +249,13 @@ int q4(char *strTexto, char *strBusca, int posicoes[30])
 
 int q5(int num)
 {
+    int invertido = 0;
+    while (num > 0)
+    {
+      invertido = invertido * 10 + num % 10;
+      num = num / 10;
+    }
+    num = invertido;
 
     return num;
 }
