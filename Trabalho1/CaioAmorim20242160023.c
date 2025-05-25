@@ -93,9 +93,49 @@ int teste(int a)
 int q1(char data[])
 {
   int datavalida = 1;
+  int sDia = 0, sMes = 0, sAno = 0;
+  int i = 0;
 
   //quebrar a string data em strings sDia, sMes, sAno
+
+  while(data[i] != '/' && data[i] != '\0'){
+    sDia = sDia * 10 + (data[i] - '0');
+    i++;
+  }
+  i++; // pula a barra
+
+  while(data[i] != '/' && data[i] != '\0'){
+    sMes = sMes * 10 + (data[i] - '0');
+    i++;
+  }
+  i++; // pula a barra
+
+  while(data[i] != '\0'){
+    sAno = sAno * 10 + (data[i] - '0');
+    i++;
+  }
   
+  if(sDia > 31 || sDia < 1) datavalida = 0;
+
+  if(sMes > 12 || sMes < 1) datavalida = 0;
+
+  if(sAno < 100){ //sAno = 99; sAno = 1999; Como vou fazer isso? 
+    
+  }
+
+  if((sAno % 4 == 0 && sAno % 100 != 0) || (sAno % 400 == 0)){
+    if(sDia == 29 && sMes == 2){
+      datavalida = 1; 
+    }
+  }else{
+    if(sDia == 29 && sMes == 2){
+      datavalida = 0; 
+    }
+  }
+
+  printf("Dia: %d\n", sDia);
+  printf("Mes: %d\n", sMes);
+  printf("Ano: %d\n", sAno);
 
   //printf("%s\n", data);
 
