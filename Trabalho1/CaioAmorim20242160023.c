@@ -326,58 +326,40 @@ int q3(char *texto, char c, int isCaseSensitive)
  */
 int q4(char *strTexto, char *strBusca, int posicoes[30])
 {
-  char strFormated[250];
-   int tamanhoTexto = strlen(strTexto), tamanhoBusca = strlen(strBusca), tamanhoFormatado;
-   int s, k, j, achou, qtdOcorrencias, primeiraPosicao;
+    char textoLimpo[250];
+    int indiceTexto = 0, indiceLimpo = 0;
+    int totalOcorrencias = 0, tamanhoBusca = strlen(strBusca);
+    int indicePos = 0;
 
-   qtdOcorrencias = 0;
+    // Remove caracteres inválidos (-61)
+    while (strTexto[indiceTexto] != '\0') {
+        if ((int)strTexto[indiceTexto] != -61) {
+            textoLimpo[indiceLimpo++] = strTexto[indiceTexto];
+        }
+        indiceTexto++;
+    }
+    textoLimpo[indiceLimpo] = '\0';
 
-   s = 0;
-   for (int i = 0; i < tamanhoTexto; i++)
-   {
-      if(strTexto[i] != -61) 
-      {
-         strFormated[s] = strTexto[i];
-         s++;
-      }
-   }
-   strFormated[s] = '\0';
+    int tamanhoLimpo = strlen(textoLimpo);
 
-   tamanhoFormatado = strlen(strFormated);
+    for (int i = 0; i <= tamanhoLimpo - tamanhoBusca; i++) {
+        int corresponde = 1;
 
-   k = 0;
+        for (int j = 0; j < tamanhoBusca; j++) {
+            if (textoLimpo[i + j] != strBusca[j]) {
+                corresponde = 0;
+                break;
+            }
+        }
 
-   for (int i = 0; i < tamanhoFormatado; i++)
-   {
-      j = 1;
-      achou = 0;
+        if (corresponde) {
+            posicoes[indicePos++] = i + 1;
+            posicoes[indicePos++] = i + tamanhoBusca;
+            totalOcorrencias++;
+        }
+    }
 
-      if (strBusca[0] == strFormated[i])
-      {
-         primeiraPosicao = i;
-
-         for (int x = i+1; x < tamanhoFormatado; x++)
-         {
-               if (strBusca[j] == strFormated[x])
-               {
-                  j++;
-                  if (j == tamanhoBusca)
-                  {
-                     posicoes[k] = primeiraPosicao+1;
-                     k++;
-                     posicoes[k] = x+1;
-                     k++;
-                  }
-               }
-               else break;
-         }
-      }
-
-      if (j == tamanhoBusca) achou = 1;
-      if (achou) qtdOcorrencias++;
-   }
-
-   return qtdOcorrencias;
+    return totalOcorrencias;
 }
 
 /*
