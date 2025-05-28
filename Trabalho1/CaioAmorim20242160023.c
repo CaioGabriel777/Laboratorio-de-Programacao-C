@@ -92,6 +92,7 @@ int teste(int a)
  */
 int q1(char data[])
 {
+
   int datavalida = 1;
   int sDia = 0, sMes = 0, sAno = 0;
   int i = 0;
@@ -325,35 +326,58 @@ int q3(char *texto, char c, int isCaseSensitive)
  */
 int q4(char *strTexto, char *strBusca, int posicoes[30])
 {
-  int qtdOcorrencias = 0;
-  int i = 0, j = 0;
-  int inicio;
+  char strFormated[250];
+   int tamanhoTexto = strlen(strTexto), tamanhoBusca = strlen(strBusca), tamanhoFormatado;
+   int s, k, j, achou, qtdOcorrencias, primeiraPosicao;
 
-  while (strTexto[i] != '\0')
-  {
-    if (strTexto[i] == strBusca[0])
-    {
-      inicio = i;
-      j = 0;
+   qtdOcorrencias = 0;
 
-      while (strTexto[i + j] != '\0' && strTexto[i + j] == strBusca[j])
+   s = 0;
+   for (int i = 0; i < tamanhoTexto; i++)
+   {
+      if(strTexto[i] != -61) 
       {
-        j++;
+         strFormated[s] = strTexto[i];
+         s++;
+      }
+   }
+   strFormated[s] = '\0';
+
+   tamanhoFormatado = strlen(strFormated);
+
+   k = 0;
+
+   for (int i = 0; i < tamanhoFormatado; i++)
+   {
+      j = 1;
+      achou = 0;
+
+      if (strBusca[0] == strFormated[i])
+      {
+         primeiraPosicao = i;
+
+         for (int x = i+1; x < tamanhoFormatado; x++)
+         {
+               if (strBusca[j] == strFormated[x])
+               {
+                  j++;
+                  if (j == tamanhoBusca)
+                  {
+                     posicoes[k] = primeiraPosicao+1;
+                     k++;
+                     posicoes[k] = x+1;
+                     k++;
+                  }
+               }
+               else break;
+         }
       }
 
-      // Se chegou no final da palavra de busca, deu match
-      if (strBusca[j] == '\0')
-      {
-        posicoes[qtdOcorrencias * 2] = inicio + 1;
-        posicoes[qtdOcorrencias * 2 + 1] = inicio + j;
-        qtdOcorrencias++;
-        i = inicio + j - 1;
-      }
-    }
-    i++;
-  }
+      if (j == tamanhoBusca) achou = 1;
+      if (achou) qtdOcorrencias++;
+   }
 
-  return qtdOcorrencias;
+   return qtdOcorrencias;
 }
 
 /*
@@ -392,35 +416,34 @@ int q5(int num)
 int q6(int numerobase, int numerobusca)
 {
   int qtdOcorrencias = 0;
-  char strBase[50];
-  char strBusca[50];
+  int tamanhoNumero = 0;
+  int aux = numerobusca;
+  int divisor = 1;
+  int numAux;
 
-  sprintf(strBase, "%d", numerobase);
-  sprintf(strBusca, "%d", numerobusca);
+  // Pega o quantos digitos tem o numeroBase
+  if (numerobase == 0)
+    tamanhoNumero = 1;
 
-  int lenBase = 0;
-  while (strBase[lenBase] != '\0')
-    lenBase++;
-
-  int lenBusca = 0;
-  while (strBusca[lenBusca] != '\0')
-    lenBusca++;
-
-  for (int i = 0; i <= lenBase - lenBusca; i++)
+  while (aux != 0)
   {
-    int encontrou = 1;
-    for (int j = 0; j < lenBusca; j++)
-    {
-      if (strBase[i + j] != strBusca[j])
-      {
-        encontrou = 0;
-        break;
-      }
-    }
-    if (encontrou)
-    {
+    aux /= 10;
+    tamanhoNumero++;
+  }
+
+  for (int i = 0; i < tamanhoNumero; i++)
+  {
+    divisor *= 10;
+  }
+
+  while (numerobase >= divisor / 10)
+  {
+    numAux = numerobase % divisor;
+
+    if (numAux == numerobusca)
       qtdOcorrencias++;
-    }
+
+    numerobase /= 10;
   }
 
   return qtdOcorrencias;
