@@ -14,16 +14,18 @@ void testQ6();
 int main(){
     //*printf("q1\n");
     //*testQ1(); // 10 testes
-    //printf("q2\n");
-    //testQ2(); // 35 testes
+    //*printf("q2\n");
+    //*testQ2(); // 35 testes
     //*printf("q3\n");
     //*testQ3(); // 13 testes
     //*printf("q4\n");
     //*testQ4(); // 22 testes
     //*printf("q5\n");
     //*testQ5(); // 10 testes
-    printf("q6\n");
-    testQ6(); // 10 testes 
+    //!printf("q6\n");
+    //!testQ6(); // 10 testes 
+    printf("q7\n");
+    testQ7(); 
 }
 
 void testQ1(){
@@ -288,3 +290,25 @@ void testQ6(){
 }
       
         
+void testQ7()
+{
+    char matrix[8][10] = {
+        { 'Q', 'M', 'J', 'D', 'L', 'A', 'Z', 'F', 'C', 'R' },
+        { 'N', 'B', 'Y', 'G', 'P', 'S', 'K', 'H', 'E', 'X' },
+        { 'V', 'O', 'W', 'U', 'T', 'I', 'Z', 'A', 'L', 'C' },
+        { 'M', 'Q', 'B', 'D', 'N', 'F', 'R', 'J', 'G', 'E' },
+        { 'H', 'S', 'K', 'T', 'U', 'X', 'W', 'O', 'P', 'Y' },
+        { 'C', 'Z', 'A', 'I', 'L', 'M', 'V', 'G', 'N', 'B' },
+        { 'D', 'F', 'E', 'H', 'S', 'K', 'J', 'Q', 'R', 'T' },
+        { 'U', 'X', 'Y', 'W', 'V', 'O', 'P', 'N', 'M', 'L' }
+    };
+    char stringBusca [6] = { 'F', 'E', 'H', 'S', 'K'};
+    printf("%d\n", q7(matrix, stringBusca) == 1);
+    strcpy(stringBusca, "KJQRT");
+    printf("%d\n", q7(matrix, stringBusca) == 1);
+    strcpy(stringBusca, "AATOK");
+    printf("%d\n", q7(matrix, stringBusca) == 0);
+    strcpy(stringBusca, "LTBON");
+    printf("%d\n", q7(matrix, stringBusca) == 1);
+
+}

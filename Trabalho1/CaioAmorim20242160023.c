@@ -16,7 +16,7 @@
 //  Matrícula: 20242160023
 //  Semestre: 2025.1
 
-//  Copyright © 2016 Renato Novais. All rights reserved.
+// Copyright © 2016 Renato Novais. All rights reserved.
 // Última atualização: 07/05/2021 - 19/08/2016
 
 // #################################################
@@ -187,10 +187,23 @@ int q1(char data[])
     4 -> datainicial > datafinal
     Caso o cálculo esteja correto, os atributos qtdDias, qtdMeses e qtdAnos devem ser preenchidos com os valores correspondentes.
  */
+
+int bissexto(int ano)
+{
+  return (ano % 4 == 0 && ano % 100 != 0) || (ano % 400 == 0);
+}
+
+void converterData(char data[], int *dia, int *mes, int *ano)
+{
+  *dia = (data[0] - '0') * 10 + (data[1] - '0');
+  *mes = (data[3] - '0') * 10 + (data[4] - '0');
+  *ano = (data[6] - '0') * 1000 + (data[7] - '0') * 100 +
+         (data[8] - '0') * 10 + (data[9] - '0');
+}
+
 DiasMesesAnos q2(char datainicial[], char datafinal[])
 {
 
-  // calcule os dados e armazene nas três variáveis a seguir
   DiasMesesAnos dma;
 
   if (q1(datainicial) == 0)
@@ -198,21 +211,52 @@ DiasMesesAnos q2(char datainicial[], char datafinal[])
     dma.retorno = 2;
     return dma;
   }
-  else if (q1(datafinal) == 0)
+
+  if (q1(datafinal) == 0)
   {
     dma.retorno = 3;
     return dma;
   }
-  else
+
+  int dia1, mes1, ano1;
+  int dia2, mes2, ano2;
+  converterData(datainicial, &dia1, &mes1, &ano1);
+  converterData(datafinal, &dia2, &mes2, &ano2);
+
+  // Verifica se datainicial > datafinal
+  if (ano1 > ano2 || (ano1 == ano2 && mes1 > mes2) || (ano1 == ano2 && mes1 == mes2 && dia1 > dia2))
   {
-    // verifique se a data final não é menor que a data inicial
-
-    // calcule a distancia entre as datas
-
-    // se tudo der certo
-    dma.retorno = 1;
+    dma.retorno = 4;
     return dma;
   }
+
+  int diasMes[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+  dma.qtdDias = dia2 - dia1;
+  dma.qtdMeses = mes2 - mes1;
+  dma.qtdAnos = ano2 - ano1;
+
+  if (dma.qtdDias < 0)
+  {
+    dma.qtdMeses--;
+    int mesAnterior = mes2 - 2; // -1 para índice 0 e -1 para anterior
+    if (mesAnterior < 0)
+      mesAnterior += 12;
+
+    dma.qtdDias += diasMes[mesAnterior];
+
+    if (mesAnterior == 1 && bissexto(ano2))
+      dma.qtdDias++; // Fevereiro bissexto
+  }
+
+  if (dma.qtdMeses < 0)
+  {
+    dma.qtdMeses += 12;
+    dma.qtdAnos--;
+  }
+
+  dma.retorno = 1;
+  return dma;
 }
 
 /*
@@ -228,239 +272,276 @@ DiasMesesAnos q2(char datainicial[], char datafinal[])
 
 char normaliza(char ch, int isCaseSensitive)
 {
-    // Mapeamento dos acentos
-    char acentuados[]  = "áàâãäÁÀÂÃÄéèêëÉÈÊËíìîïÍÌÎÏóòôõöÓÒÔÕÖúùûüÚÙÛÜçÇ";
-    char normalizados[] = "aaaaaAAAAAeeeeEEEEiiiiIIIIoooooOOOOOuuuuUUUUcC";
+  char acentuados[] = "áàâãäÁÀÂÃÄéèêëÉÈÊËíìîïÍÌÎÏóòôõöÓÒÔÕÖúùûüÚÙÛÜçÇ";
+  char normalizados[] = "aaaaaAAAAAeeeeEEEEiiiiIIIIoooooOOOOOuuuuUUUUcC";
 
-    for (int i = 0; acentuados[i] != '\0'; i++) {
-        if (ch == acentuados[i]) {
-            ch = normalizados[i];
-            break;
-        }
+  for (int i = 0; acentuados[i] != '\0'; i++)
+  {
+    if (ch == acentuados[i])
+    {
+      ch = normalizados[i];
+      break;
     }
+  }
 
-    // Transforma em minúsculo se não for case sensitive
-    if (!isCaseSensitive && ch >= 'A' && ch <= 'Z')
-        ch = ch + 32;
-
-    return ch;
+  if (!isCaseSensitive && ch >= 'A' && ch <= 'Z')
+    ch = ch + 32;
+  return ch;
 }
 
 int q3(char *texto, char c, int isCaseSensitive)
 {
   int qtdOcorrencias = 0;
-    int i = 0;
+  int i = 0;
 
-    char letraAlvo = normaliza(c, isCaseSensitive);
+  char letraAlvo = normaliza(c, isCaseSensitive);
 
-    while (texto[i] != '\0')
+  while (texto[i] != '\0')
+  {
+    char atual = normaliza(texto[i], isCaseSensitive);
+
+    if (atual == letraAlvo)
+      qtdOcorrencias++;
+
+    i++;
+  }
+  return qtdOcorrencias;
+}
+
+/*
+ Q4 = encontrar palavra em texto
+ @objetivo
+    Pesquisar todas as ocorrências de uma palavra em um texto
+ @entrada
+    uma string texto base (strTexto), uma string strBusca e um vetor de inteiros (posicoes) que irá guardar as posições de início e fim de cada ocorrência da palavra (strBusca) no texto base (texto).
+ @saida
+    Um número n >= 0 correspondente a quantidade de ocorrências encontradas.
+    O vetor posicoes deve ser preenchido com cada entrada e saída correspondente. Por exemplo, se tiver uma única ocorrência, a posição 0 do vetor deve ser preenchido com o índice de início do texto, e na posição 1, deve ser preenchido com o índice de fim da ocorrencias. Se tiver duas ocorrências, a segunda ocorrência será amazenado nas posições 2 e 3, e assim consecutivamente. Suponha a string "Instituto Federal da Bahia", e palavra de busca "dera". Como há uma ocorrência da palavra de busca no texto, deve-se armazenar no vetor, da seguinte forma:
+        posicoes[0] = 13;
+        posicoes[1] = 16;
+        Observe que o índice da posição no texto deve começar ser contado a partir de 1.
+        O retorno da função, n, nesse caso seria 1;
+
+ */
+int q4(char *strTexto, char *strBusca, int posicoes[30])
+{
+  int qtdOcorrencias = 0;
+  int i = 0, j = 0;
+  int inicio;
+
+  while (strTexto[i] != '\0')
+  {
+    if (strTexto[i] == strBusca[0])
     {
-        char atual = normaliza(texto[i], isCaseSensitive);
+      inicio = i;
+      j = 0;
 
-        if (atual == letraAlvo)
-            qtdOcorrencias++;
+      while (strTexto[i + j] != '\0' && strTexto[i + j] == strBusca[j])
+      {
+        j++;
+      }
 
-        i++;
+      // Se chegou no final da palavra de busca, deu match
+      if (strBusca[j] == '\0')
+      {
+        posicoes[qtdOcorrencias * 2] = inicio + 1;
+        posicoes[qtdOcorrencias * 2 + 1] = inicio + j;
+        qtdOcorrencias++;
+        i = inicio + j - 1;
+      }
     }
-    return qtdOcorrencias;
+    i++;
   }
 
-  /*
-   Q4 = encontrar palavra em texto
-   @objetivo
-      Pesquisar todas as ocorrências de uma palavra em um texto
-   @entrada
-      uma string texto base (strTexto), uma string strBusca e um vetor de inteiros (posicoes) que irá guardar as posições de início e fim de cada ocorrência da palavra (strBusca) no texto base (texto).
-   @saida
-      Um número n >= 0 correspondente a quantidade de ocorrências encontradas.
-      O vetor posicoes deve ser preenchido com cada entrada e saída correspondente. Por exemplo, se tiver uma única ocorrência, a posição 0 do vetor deve ser preenchido com o índice de início do texto, e na posição 1, deve ser preenchido com o índice de fim da ocorrencias. Se tiver duas ocorrências, a segunda ocorrência será amazenado nas posições 2 e 3, e assim consecutivamente. Suponha a string "Instituto Federal da Bahia", e palavra de busca "dera". Como há uma ocorrência da palavra de busca no texto, deve-se armazenar no vetor, da seguinte forma:
-          posicoes[0] = 13;
-          posicoes[1] = 16;
-          Observe que o índice da posição no texto deve começar ser contado a partir de 1.
-          O retorno da função, n, nesse caso seria 1;
+  return qtdOcorrencias;
+}
 
-   */
-  int q4(char *strTexto, char *strBusca, int posicoes[30])
+/*
+ Q5 = inverte número
+ @objetivo
+    Inverter número inteiro
+ @entrada
+    uma int num.
+ @saida
+    Número invertido
+ */
+
+int q5(int num)
+{
+  int invertido = 0;
+  while (num > 0)
   {
-    int qtdOcorrencias = 0;
-    int i = 0, j = 0;
-    int inicio;
+    invertido = invertido * 10 + num % 10;
+    num = num / 10;
+  }
+  num = invertido;
 
-    while (strTexto[i] != '\0') {
-        if (strTexto[i] == strBusca[0]) {
-            inicio = i;
-            j = 0;
+  return num;
+}
 
-            // Verifica se todos os caracteres seguintes batem com strBusca
-            while (strTexto[i + j] != '\0' && strTexto[i + j] == strBusca[j]) {
-                j++;
-            }
+/*
+ Q6 = ocorrência de um número em outro
+ @objetivo
+    Verificar quantidade de vezes da ocorrência de um número em outro
+ @entrada
+    Um número base (numerobase) e um número de busca (numerobusca).
+ @saida
+    Quantidade de vezes que número de busca ocorre em número base
+ */
 
-            // Se chegou no final da palavra de busca, deu match
-            if (strBusca[j] == '\0') {
-                posicoes[qtdOcorrencias * 2]     = inicio + 1;           
-                posicoes[qtdOcorrencias * 2 + 1] = inicio + j;           
-                qtdOcorrencias++;
-                i = inicio + j - 1; 
-            }
+int q6(int numerobase, int numerobusca)
+{
+  int qtdOcorrencias = 0;
+  char strBase[50];
+  char strBusca[50];
+
+  sprintf(strBase, "%d", numerobase);
+  sprintf(strBusca, "%d", numerobusca);
+
+  int lenBase = 0;
+  while (strBase[lenBase] != '\0')
+    lenBase++;
+
+  int lenBusca = 0;
+  while (strBusca[lenBusca] != '\0')
+    lenBusca++;
+
+  for (int i = 0; i <= lenBase - lenBusca; i++)
+  {
+    int encontrou = 1;
+    for (int j = 0; j < lenBusca; j++)
+    {
+      if (strBase[i + j] != strBusca[j])
+      {
+        encontrou = 0;
+        break;
+      }
+    }
+    if (encontrou)
+    {
+      qtdOcorrencias++;
+    }
+  }
+
+  return qtdOcorrencias;
+}
+
+/*
+ Q7 = jogo busca palavras
+ @objetivo
+    Verificar se existe uma string em uma matriz de caracteres em todas as direções e sentidos possíves
+ @entrada
+    Uma matriz de caracteres e uma string de busca (palavra).
+ @saida
+    1 se achou 0 se não achou
+ */
+
+int q7(char matriz[8][10], char palavra[5])
+{
+  int linhas = 8;
+  int colunas = 10;
+  int len = strlen(palavra);
+  int achou = 0;
+
+  // Direções: ↓, ↑, →, ←, ↘, ↙, ↗, ↖
+  int dx[8] = {1, -1, 0, 0, 1, 1, -1, -1};
+  int dy[8] = {0, 0, 1, -1, 1, -1, 1, -1};
+
+  for (int i = 0; i < linhas && !achou; i++)
+  {
+    for (int j = 0; j < colunas && !achou; j++)
+    {
+      for (int d = 0; d < 8 && !achou; d++)
+      {
+        int k;
+        for (k = 0; k < len; k++)
+        {
+          int ni = i + dx[d] * k;
+          int nj = j + dy[d] * k;
+
+          if (ni < 0 || ni >= linhas || nj < 0 || nj >= colunas)
+            break;
+
+          if (matriz[ni][nj] != palavra[k])
+            break;
         }
-        i++;
-    }
 
-    return qtdOcorrencias;
-  }
-
-  /*
-   Q5 = inverte número
-   @objetivo
-      Inverter número inteiro
-   @entrada
-      uma int num.
-   @saida
-      Número invertido
-   */
-
-  int q5(int num)
-  {
-    int invertido = 0;
-    while (num > 0)
-    {
-      invertido = invertido * 10 + num % 10;
-      num = num / 10;
-    }
-    num = invertido;
-
-    return num;
-  }
-
-  /*
-   Q6 = ocorrência de um número em outro
-   @objetivo
-      Verificar quantidade de vezes da ocorrência de um número em outro
-   @entrada
-      Um número base (numerobase) e um número de busca (numerobusca).
-   @saida
-      Quantidade de vezes que número de busca ocorre em número base
-   */
-
-  int q6(int numerobase, int numerobusca)
-  {
-    int qtdOcorrencias = 0;
-
-    char strBase[50];
-    char strBusca[50];
-
-    // converte os números para strings
-    sprintf(strBase, "%d", numerobase);
-    sprintf(strBusca, "%d", numerobusca);
-
-    int lenBase = 0;
-    while (strBase[lenBase] != '\0') {
-        lenBase++;
-    }
-
-    int lenBusca = 0;
-    while (strBusca[lenBusca] != '\0') {
-        lenBusca++;
-    }
-
-    for (int i = 0; i <= lenBase - lenBusca; i++) {
-        int encontrou = 1;
-        for (int j = 0; j < lenBusca; j++) {
-            if (strBase[i + j] != strBusca[j]) {
-                encontrou = 0;
-                break;
-            }
+        if (k == len)
+        {
+          achou = 1;
         }
-        if (encontrou) {
-            qtdOcorrencias++;
-        }
+      }
     }
-
-    return qtdOcorrencias;
   }
 
-  /*
-   Q7 = jogo busca palavras
-   @objetivo
-      Verificar se existe uma string em uma matriz de caracteres em todas as direções e sentidos possíves
-   @entrada
-      Uma matriz de caracteres e uma string de busca (palavra).
-   @saida
-      1 se achou 0 se não achou
-   */
+  return achou;
+}
 
-  int q7(char matriz[8][10], char palavra[5])
+DataQuebrada quebraData(char data[])
+{
+  DataQuebrada dq;
+  char sDia[3];
+  char sMes[3];
+  char sAno[5];
+  int i;
+
+  for (i = 0; data[i] != '/'; i++)
   {
-    int achou;
-    return achou;
+    sDia[i] = data[i];
   }
-
-  DataQuebrada quebraData(char data[])
+  if (i == 1 || i == 2)
+  {                 // testa se tem 1 ou dois digitos
+    sDia[i] = '\0'; // coloca o barra zero no final
+  }
+  else
   {
-    DataQuebrada dq;
-    char sDia[3];
-    char sMes[3];
-    char sAno[5];
-    int i;
-
-    for (i = 0; data[i] != '/'; i++)
-    {
-      sDia[i] = data[i];
-    }
-    if (i == 1 || i == 2)
-    {                 // testa se tem 1 ou dois digitos
-      sDia[i] = '\0'; // coloca o barra zero no final
-    }
-    else
-    {
-      dq.valido = 0;
-      return dq;
-    }
-
-    int j = i + 1; // anda 1 cada para pular a barra
-    i = 0;
-
-    for (; data[j] != '/'; j++)
-    {
-      sMes[i] = data[j];
-      i++;
-    }
-
-    if (i == 1 || i == 2)
-    {                 // testa se tem 1 ou dois digitos
-      sMes[i] = '\0'; // coloca o barra zero no final
-    }
-    else
-    {
-      dq.valido = 0;
-      return dq;
-    }
-
-    j = j + 1; // anda 1 cada para pular a barra
-    i = 0;
-
-    for (; data[j] != '\0'; j++)
-    {
-      sAno[i] = data[j];
-      i++;
-    }
-
-    if (i == 2 || i == 4)
-    {                 // testa se tem 2 ou 4 digitos
-      sAno[i] = '\0'; // coloca o barra zero no final
-    }
-    else
-    {
-      dq.valido = 0;
-      return dq;
-    }
-
-    dq.iDia = atoi(sDia);
-    dq.iMes = atoi(sMes);
-    dq.iAno = atoi(sAno);
-
-    dq.valido = 1;
-
+    dq.valido = 0;
     return dq;
   }
+
+  int j = i + 1; // anda 1 cada para pular a barra
+  i = 0;
+
+  for (; data[j] != '/'; j++)
+  {
+    sMes[i] = data[j];
+    i++;
+  }
+
+  if (i == 1 || i == 2)
+  {                 // testa se tem 1 ou dois digitos
+    sMes[i] = '\0'; // coloca o barra zero no final
+  }
+  else
+  {
+    dq.valido = 0;
+    return dq;
+  }
+
+  j = j + 1; // anda 1 cada para pular a barra
+  i = 0;
+
+  for (; data[j] != '\0'; j++)
+  {
+    sAno[i] = data[j];
+    i++;
+  }
+
+  if (i == 2 || i == 4)
+  {                 // testa se tem 2 ou 4 digitos
+    sAno[i] = '\0'; // coloca o barra zero no final
+  }
+  else
+  {
+    dq.valido = 0;
+    return dq;
+  }
+
+  dq.iDia = atoi(sDia);
+  dq.iMes = atoi(sMes);
+  dq.iAno = atoi(sAno);
+
+  dq.valido = 1;
+
+  return dq;
+}
