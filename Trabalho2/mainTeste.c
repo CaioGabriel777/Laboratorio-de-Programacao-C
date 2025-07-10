@@ -17,17 +17,23 @@ void testeListaEncadeada();
 
 int main()
 {
-    inicializar();
-    testeInserirSemNada();
-    /*testeCriarEstrutura();
-    testeInserirComEstrutura();
-    testeExcluir();
-    testeExcluirNumeroEspecifico();
-    testeListar();
-    testeRetornarTodosNumeros();
-    testeMudarTamanhoEstrutura();
-    testeListaEncadeada();*/
-    finalizar();
+    inicializar(); //* matei
+    testeInserirSemNada(); //* matei
+    printf("\n");
+    testeCriarEstrutura(); //* matei
+    printf("\n");
+    testeInserirComEstrutura(); //* matei
+    printf("\n");
+    testeExcluir(); //* matei
+    printf("\n");
+    testeExcluirNumeroEspecifico(); //* matei
+    printf("\n");
+    //printf("\n");
+    //testeListar();
+    //testeRetornarTodosNumeros();
+    //testeMudarTamanhoEstrutura();
+    //testeListaEncadeada();
+    //finalizar();
 }
 int ligado = 0;
 void show_log(char *str)
