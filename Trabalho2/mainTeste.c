@@ -23,15 +23,11 @@ int main()
     testeInserirComEstrutura(); //* matei
     testeExcluir(); //* matei
     testeExcluirNumeroEspecifico(); //* matei
-    printf("\n");
     testeListar(); //* matei   
-    printf("\n");
     testeRetornarTodosNumeros(); //* matei
-    printf("\n");
     testeMudarTamanhoEstrutura(); //* matei
-    printf("\n");
     testeListaEncadeada(); //* matei
-    finalizar();
+    finalizar(); //* matei
 }
 int ligado = 0;
 void show_log(char *str)
