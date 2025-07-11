@@ -19,21 +19,19 @@ int main()
 {
     inicializar(); //* matei
     testeInserirSemNada(); //* matei
-    printf("\n");
     testeCriarEstrutura(); //* matei
-    printf("\n");
     testeInserirComEstrutura(); //* matei
-    printf("\n");
     testeExcluir(); //* matei
-    printf("\n");
     testeExcluirNumeroEspecifico(); //* matei
     printf("\n");
-    //printf("\n");
-    //testeListar();
-    //testeRetornarTodosNumeros();
-    //testeMudarTamanhoEstrutura();
-    //testeListaEncadeada();
-    //finalizar();
+    testeListar(); //* matei   
+    printf("\n");
+    testeRetornarTodosNumeros(); //* matei
+    printf("\n");
+    testeMudarTamanhoEstrutura(); //* matei
+    printf("\n");
+    testeListaEncadeada(); //* matei
+    finalizar();
 }
 int ligado = 0;
 void show_log(char *str)
@@ -128,7 +126,7 @@ void testeListar()
 
     printf("%d\n", getDadosOrdenadosEstruturaAuxiliar(1, vet) == SEM_ESTRUTURA_AUXILIAR);
     printf("%d\n", getDadosOrdenadosEstruturaAuxiliar(11, vet) == POSICAO_INVALIDA);
-    printf("%d\n", getDadosOrdenadosEstruturaAuxiliar(2, vet) == SUCESSO);
+    printf("%d\n", getDadosOrdenadosEstruturaAuxiliar(2, vet) == SUCESSO); // merda
 
     printf("%d\n", vet[0] == -9);
     printf("%d\n", vet[1] == 7);
@@ -157,9 +155,10 @@ void testeRetornarTodosNumeros()
     printf("%d\n", inserirNumeroEmEstrutura(2, 3) == SUCESSO);
     printf("%d\n", inserirNumeroEmEstrutura(2, 8) == SUCESSO);
     printf("%d\n", inserirNumeroEmEstrutura(2, 0) == SUCESSO);
+
     /*
-2 [3,8,0]
-*/
+    2 [3,8,0]
+    */
 
     printf("%d\n", criarEstruturaAuxiliar(5, 10) == SUCESSO);
 
@@ -169,10 +168,12 @@ void testeRetornarTodosNumeros()
     printf("%d\n", inserirNumeroEmEstrutura(5, 6) == SUCESSO);
     printf("%d\n", inserirNumeroEmEstrutura(5, 27) == SUCESSO);
     printf("%d\n", inserirNumeroEmEstrutura(5, -6) == SUCESSO);
+
     /*
-2 [3,8,0]
-5 [1,34,12,6,27,-6, , , , ]
-*/
+    2 [3,8,0]
+    5 [1,34,12,6,27,-6, , , , ]
+    */
+   
     int vet[9];
 
     printf("%d\n", getDadosDeTodasEstruturasAuxiliares(vet) == SUCESSO);
